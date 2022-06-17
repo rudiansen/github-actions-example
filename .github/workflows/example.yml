@@ -1,6 +1,13 @@
 name: github-actions-example
 
-on: [push]
+on: 
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 env:
   REGISTRY: devopslabpsisss.azurecr.io
@@ -31,7 +38,7 @@ jobs:
           name: Package
           path: staging/
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v1.1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Login to Azure Container Registry
