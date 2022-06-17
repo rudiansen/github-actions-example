@@ -20,12 +20,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Execute Maven verify phase 
         run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/*.jar staging
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: Package
-          path: '${{ github.workspace }}/staging/*.jar'
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -36,7 +35,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Package
-          path: staging/
+          path: target/
       - name: Login to Azure
         uses: azure/login@v1.1
         with:
