@@ -10,8 +10,9 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: devopslabpsisss.azurecr.io
+  REGISTRY: ${{ secrets.REGISTRY_URL }}
   APP_NAME: github-actions-psisss
+  RESOURCE_GROUP: devops-lab-rg-psisss
 
 jobs:
   build:
@@ -57,7 +58,7 @@ jobs:
             --docker-registry-server-url ${{ env.REGISTRY }} `
             --docker-registry-server-user ${{ secrets.REGISTRY_USERNAME }} `
             --name ${{ env.APP_NAME }} `
-            --resource-group devops-lab-rg-psisss
+            --resource-group ${{ env.RESOURCE_GROUP }}
         shell: pwsh
       - name: Deploy to Web App
         uses: azure/webapps-deploy@v2
