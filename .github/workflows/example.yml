@@ -50,6 +50,15 @@ jobs:
         run: |
           docker build -t ${{ env.REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }} .
           docker push ${{ env.REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }}
+      - name: Configure Web App Container
+        run: |
+          az webapp config container set `
+            --docker-registry-server-password ${{ secrets.REGISTRY_PASSWORD }} `
+            --docker-registry-server-url ${{ env.REGISTRY }} `
+            --docker-registry-server-user ${{ secrets.REGISTRY_USERNAME }}
+            --name ${{ env.APP_NAME }}
+            --resource-group devops-lab-rg-psisss
+        shell: pwsh
       - name: Deploy to Web App
         uses: azure/webapps-deploy@v2
         with:
