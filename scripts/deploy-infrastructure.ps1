@@ -14,7 +14,7 @@ az group create `
 az appservice plan create `
     --resource-group $resourceGroupName `
     --name $appServicePlanName `
-    --sku B3 `
+    --sku S1 `
     --is-linux
 
 # Create Azure Web App with NGINX container
