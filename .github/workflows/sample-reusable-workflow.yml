@@ -1,0 +1,33 @@
+name: sample-reusable-workflow
+
+on:
+  workflow_call:
+    inputs:
+      username:
+        required: true
+        type: string
+      webAppUrl:
+        required: false
+        type: string
+    secrets:
+      envPAT:
+        required: true
+    outputs:
+      message:
+        description: 'A message from the called workflow'
+        value: ${{ jobs.print_job.outputs.output1 }}
+
+jobs:
+  print_job:
+    name: Print username and deployed web app URL
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.print_job_step.outputs.message }}
+    steps:
+      - name: Print GitHub user account
+        run: echo 'The GitHub user who triggers the workflow is ${{ inputs.username }}'
+      - name: Print the deployed web URL
+        run: |
+          echo 'The deploy website URL can be accessed at ${{ inputs.webAppUrl }}'
+      - id: print_job_step
+        run: echo "::set-output name=message::Successfully called the reusable workflow!"  
