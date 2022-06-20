@@ -52,18 +52,24 @@ jobs:
           docker build -t ${{ env.REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }} .
           docker push ${{ env.REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }}
       - name: Configure Web App Container
-        run: |
-          az webapp config container set `
-            --docker-registry-server-password ${{ secrets.REGISTRY_PASSWORD }} `
-            --docker-registry-server-url ${{ env.REGISTRY }} `
-            --docker-registry-server-user ${{ secrets.REGISTRY_USERNAME }} `
-            --name ${{ env.APP_NAME }} `
-            --resource-group ${{ env.RESOURCE_GROUP }}
-        shell: pwsh
+        uses: azure/CLI@v1
+        with: 
+          inlineScript: |
+            az webapp config container set `
+              --docker-registry-server-password ${{ secrets.REGISTRY_PASSWORD }} `
+              --docker-registry-server-url ${{ env.REGISTRY }} `
+              --docker-registry-server-user ${{ secrets.REGISTRY_USERNAME }} `
+              --name ${{ env.APP_NAME }} `
+              --resource-group ${{ env.RESOURCE_GROUP }}        
       - name: Deploy to Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.APP_NAME }}
           images: ${{ env.REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }}
       - name: Logout from Azure
-        run: az logout
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az logout
+            az cache purge
+            az account clear
